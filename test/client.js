@@ -55,6 +55,29 @@ describe("Client test", function() {
       done();
     });
   });
+
+  it("should make correct filter request", function(done) {
+    client.get({
+      test: true,
+      url: "test",
+      filter: [
+        {key: 1},
+        {
+          field: "id",
+          type: "gt",
+          value: 500
+        }
+      ]
+    }, function(err, req) {
+      should.not.exists(err);
+      req.qs.filterFields.should.eql(["key", "id"]);
+      req.qs.filterType_key.should.equal("eq");
+      req.qs.filterValue_key.should.equal(1);
+      req.qs.filterType_id.should.equal("gt");
+      req.qs.filterValue_id.should.equal(500);
+      done();
+    });
+  });
 });
 
 

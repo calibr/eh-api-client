@@ -25,21 +25,49 @@ var Client = function(apiURL, lockUUID) {
   this.apiURL = apiURL;
 };
 
-Client.prototype.request = function(method, url, body, cb) {
+Client.prototype.request = function(method, options, body, cb) {
   if(typeof body === "function") {
     cb = body;
     body = undefined;
   }
+  if(typeof options === "string") {
+    options = {
+      url: options
+    };
+  }
   var reqParams = {
-    url: this.apiURL + url,
+    url: this.apiURL + options.url,
     method: method,
-    json: true
+    json: true,
+    qs: {}
   };
   if(body) {
     reqParams.body = body;
   }
   if(this.lockUUID) {
     reqParams.headers = {Authorization: "Lock " + this.lockUUID};
+  }
+  if(options.filter) {
+    var filterFields = [];
+    for(var i = 0; i != options.filter.length; i++) {
+      var filter = options.filter[i];
+      if(!filter.field) {
+        var key = Object.keys(filter)[0];
+        if(!key) {
+          continue;
+        }
+        filter.field = key;
+        filter.value = filter[key];
+        filter.type = "eq";
+      }
+      filterFields.push(filter.field);
+      reqParams.qs["filterValue_" + filter.field] = filter.value;
+      reqParams.qs["filterType_" + filter.field] = filter.type;
+    }
+    reqParams.qs["filterFields"] = filterFields;
+  }
+  if(options.test) {
+    return cb(null, reqParams);
   }
   request(reqParams, function(err, res, data) {
     if(err) {
