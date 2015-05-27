@@ -1,0 +1,22 @@
+{
+  "name": "eh-api-client",
+  "version": "0.1.0",
+  "description": "Node.js rest client",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/calibr/eh-api-client"
+  },
+  "author": "calibr <awcalibr@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "request": "^2.55.0"
+  },
+  "devDependencies": {
+    "eh-guid": "^0.2.0",
+    "should": "^6.0.3"
+  }
+}
