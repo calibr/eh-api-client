@@ -20,8 +20,10 @@ var methods = [
   "PATCH"
 ];
 
-var Client = function(apiURL, lockUUID) {
-  this.lockUUID = lockUUID;
+var Client = function(apiURL, options) {
+  options = options || {};
+  this.lockUUID = options.lockUUID;
+  this.internalAuth = options.internalAuth;
   this.apiURL = apiURL;
 };
 
@@ -46,6 +48,9 @@ Client.prototype.request = function(method, options, body, cb) {
   }
   if(this.lockUUID) {
     reqParams.headers = {Authorization: "Lock " + this.lockUUID};
+  }
+  if(this.internalAuth) {
+    reqParams.headers = {Authorization: "Internal " + this.internalAuth};
   }
   if(options.filter) {
     var filterFields = [];
@@ -115,6 +120,7 @@ methods.forEach(function(method) {
  * @param  {Object} options
  * @param  {Number} options.userId
  * @param  {String} options.app
+ * @param  {String} [options.lockType]
  * @return {Client}
  */
 Factory.prototype.getLock = function(options, cb) {
@@ -131,8 +137,20 @@ Factory.prototype.getLock = function(options, cb) {
     if(res.statusCode !== 200) {
       return cb(buildError(res, data));
     }
-    var client = new Client(self.apiURL, data.uuid);
+    var client = new Client(self.apiURL, {
+      lockUUID: data.uuid
+    });
     cb(null, client);
+  });
+};
+
+/**
+ * @param  {Number} userId
+ * @param  {String} app
+ */
+Factory.prototype.getClient = function(userId, app) {
+  return new Client(this.apiURL, {
+    internalAuth: userId + ":" + app
   });
 };
 
