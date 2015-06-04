@@ -6,7 +6,7 @@ var
 var f = new Factory("http://localhost:3000");
 var client = f.getClient(1, "web");
 
-describe("Client test", function() {
+describe("Internal Auth Client test", function() {
   var noteGlobalId = ehGuid.gen();
 
   it("get notes", function(done) {
@@ -55,6 +55,18 @@ describe("Client test", function() {
       req.qs.filterValue_key.should.equal(1);
       req.qs.filterType_id.should.equal("gt");
       req.qs.filterValue_id.should.equal(500);
+      done();
+    });
+  });
+
+  it("should make a range request", function(done) {
+    client.get({
+      url: "test",
+      range: "items 0-4",
+      test: true
+    }, function(err, req) {
+      should.not.exists(err);
+      req.headers.Range.should.equal("items 0-4");
       done();
     });
   });

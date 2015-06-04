@@ -41,16 +41,17 @@ Client.prototype.request = function(method, options, body, cb) {
     url: this.apiURL + options.url,
     method: method,
     json: true,
-    qs: {}
+    qs: {},
+    headers: {}
   };
   if(body) {
     reqParams.body = body;
   }
   if(this.lockUUID) {
-    reqParams.headers = {Authorization: "Lock " + this.lockUUID};
+    reqParams.headers.Authorization = "Lock " + this.lockUUID;
   }
   if(this.internalAuth) {
-    reqParams.headers = {Authorization: "Internal " + this.internalAuth};
+    reqParams.headers.Authorization = "Internal " + this.internalAuth;
   }
   if(options.filter) {
     var filterFields = [];
@@ -70,6 +71,9 @@ Client.prototype.request = function(method, options, body, cb) {
       reqParams.qs["filterType_" + filter.field] = filter.type;
     }
     reqParams.qs["filterFields"] = filterFields;
+  }
+  if(options.range) {
+    reqParams.headers.Range = options.range;
   }
   if(options.test) {
     return cb(null, reqParams);
