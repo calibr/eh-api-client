@@ -88,7 +88,7 @@ Client.prototype.request = function(method, options, body, cb) {
     if(err) {
       return cb(err);
     }
-    if(res.statusCode !== 200) {
+    if(res.statusCode < 200 || res.statusCode >= 300) {
       return cb(buildError(res, data));
     }
     cb(null, data, res);
