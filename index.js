@@ -81,7 +81,7 @@ Client.prototype.request = function(method, options, body, cb) {
     if(res.statusCode !== 200) {
       return cb(buildError(res, data));
     }
-    cb(null, data);
+    cb(null, data, res);
   });
 };
 
