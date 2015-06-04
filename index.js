@@ -8,7 +8,7 @@ function buildError(res, data) {
       error[k] = data[k];
     }
   }
-  error.httpCode = res.statusCode;
+  error.httpStatus = res.statusCode;
   return error;
 }
 
@@ -89,7 +89,7 @@ Client.prototype.request = function(method, options, body, cb) {
       return cb(err);
     }
     if(res.statusCode < 200 || res.statusCode >= 300) {
-      return cb(buildError(res, data));
+      return cb(buildError(res, data), null, res);
     }
     cb(null, data, res);
   });
