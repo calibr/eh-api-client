@@ -37,6 +37,12 @@ Client.prototype.request = function(method, options, body, cb) {
       url: options
     };
   }
+  if(method === "GET" && typeof body === "object") {
+    // body is options for GET request
+    for(var k in body) {
+      options[k] = body[k];
+    }
+  }
   var reqParams = {
     url: this.apiURL + options.url,
     method: method,

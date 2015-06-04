@@ -60,12 +60,12 @@ describe("Internal Auth Client test", function() {
   });
 
   it("should make a range request", function(done) {
-    client.get({
-      url: "test",
+    client.get("/test", {
       range: "items 0-4",
       test: true
     }, function(err, req) {
       should.not.exists(err);
+      req.url.should.equal("http://localhost:3000/test");
       req.headers.Range.should.equal("items 0-4");
       done();
     });
