@@ -17,7 +17,8 @@ var methods = [
   "POST",
   "PUT",
   "DELETE",
-  "PATCH"
+  "PATCH",
+  "HEAD"
 ];
 
 var Client = function(apiURL, options) {
