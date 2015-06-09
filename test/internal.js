@@ -5,6 +5,7 @@ var
 
 var f = new Factory("http://localhost:3000");
 var client = f.getClient(1, "web");
+var enc = encodeURIComponent;
 
 describe("Internal Auth Client test", function() {
   var noteGlobalId = ehGuid.gen();
@@ -74,5 +75,20 @@ describe("Internal Auth Client test", function() {
   it("should fork client", function() {
     var fork = client.fork("/sub/url");
     fork.apiURL.should.equal(client.apiURL + "/sub/url");
+  });
+
+  it("should fork client with placeholders in URL", function() {
+    var fork = client.fork(["/blabla/??/??", "///&%&*", "&&*^$$$!@$//?"]);
+    fork.apiURL.should.equal(client.apiURL + "/blabla/" + enc("///&%&*") + "/" + enc("&&*^$$$!@$//?"));
+  });
+
+  it("should request url with placeholders", function(done) {
+    client.get(["/test/??/??", "///&%&*", "&&*^$$$!@$//?"], {
+      test: true
+    }, function(err, req) {
+      should.not.exists(err);
+      req.url.should.equal("http://localhost:3000/test/" + enc("///&%&*") + "/" + enc("&&*^$$$!@$//?"));
+      done();
+    });
   });
 });

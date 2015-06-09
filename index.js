@@ -12,6 +12,20 @@ function buildError(res, data) {
   return error;
 }
 
+function _url(data) {
+  if(typeof data === "string") {
+    return data;
+  }
+  if(data instanceof Array) {
+    var url = data.shift();
+    url = url.replace(/\?\?/g, function() {
+      return encodeURIComponent(data.shift());
+    });
+    return url;
+  }
+  throw new Error("url should be a string or an array");
+}
+
 var methods = [
   "GET",
   "POST",
@@ -30,7 +44,7 @@ var Client = function(apiURL, options) {
 };
 
 Client.prototype.fork = function(subUrl) {
-  apiURL = this.apiURL + subUrl;
+  apiURL = this.apiURL + _url(subUrl);
   var newClient = new Client(apiURL, this._options);
   return newClient;
 };
@@ -40,7 +54,7 @@ Client.prototype.request = function(method, options, body, cb) {
     cb = body;
     body = undefined;
   }
-  if(typeof options === "string") {
+  if(typeof options === "string" || (options instanceof Array)) {
     options = {
       url: options
     };
@@ -52,7 +66,7 @@ Client.prototype.request = function(method, options, body, cb) {
     }
   }
   var reqParams = {
-    url: this.apiURL + options.url,
+    url: this.apiURL + _url(options.url),
     method: method,
     json: true,
     qs: {},
