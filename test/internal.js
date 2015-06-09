@@ -70,4 +70,9 @@ describe("Internal Auth Client test", function() {
       done();
     });
   });
+
+  it("should fork client", function() {
+    var fork = client.fork("/sub/url");
+    fork.apiURL.should.equal(client.apiURL + "/sub/url");
+  });
 });

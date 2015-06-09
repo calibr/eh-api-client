@@ -23,9 +23,16 @@ var methods = [
 
 var Client = function(apiURL, options) {
   options = options || {};
+  this._options = options;
   this.lockUUID = options.lockUUID;
   this.internalAuth = options.internalAuth;
   this.apiURL = apiURL;
+};
+
+Client.prototype.fork = function(subUrl) {
+  apiURL = this.apiURL + subUrl;
+  var newClient = new Client(apiURL, this._options);
+  return newClient;
 };
 
 Client.prototype.request = function(method, options, body, cb) {
