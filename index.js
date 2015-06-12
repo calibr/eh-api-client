@@ -1,5 +1,6 @@
 var
-  request = require("request");
+  request = require("request"),
+  Q = require("q");
 
 function buildError(res, data) {
   var error = new Error();
@@ -50,6 +51,7 @@ Client.prototype.fork = function(subUrl) {
 };
 
 Client.prototype.request = function(method, options, body, cb) {
+  var deferred = Q.defer();
   if(typeof body === "function") {
     cb = body;
     body = undefined;
@@ -103,18 +105,23 @@ Client.prototype.request = function(method, options, body, cb) {
   if(options.range) {
     reqParams.headers.Range = options.range;
   }
+  deferred.promise.nodeify(cb);
   if(options.test) {
-    return cb(null, reqParams);
+    process.nextTick(function() {
+      deferred.resolve(reqParams);
+    });
+    return deferred.promise;
   }
   request(reqParams, function(err, res, data) {
     if(err) {
-      return cb(err);
+      deferred.reject(err);
     }
     if(res.statusCode < 200 || res.statusCode >= 300) {
-      return cb(buildError(res, data), null, res);
+      deferred.reject(buildError(res, data), null, res);
     }
-    cb(null, data, res);
+    deferred.resolve(data, res);
   });
+  return deferred.promise;
 };
 
 Client.prototype.release = function(cb) {
@@ -130,7 +137,7 @@ methods.forEach(function(method) {
   Client.prototype[method.toLowerCase()] = function() {
     var args = Array.prototype.slice.call(arguments);
     args.unshift(method);
-    this.request.apply(this, args);
+    return this.request.apply(this, args);
   };
 });
 

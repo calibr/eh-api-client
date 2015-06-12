@@ -37,6 +37,14 @@ describe("Internal Auth Client test", function() {
     });
   });
 
+  it("get note(promise)", function(done) {
+    client.get("/notes/" + noteGlobalId).then(function(data) {
+      data.title.should.equal("test note");
+      data.globalId.should.equal(noteGlobalId);
+      done();
+    });
+  });
+
   it("should make correct filter request", function(done) {
     client.get({
       test: true,
@@ -66,6 +74,17 @@ describe("Internal Auth Client test", function() {
       test: true
     }, function(err, req) {
       should.not.exists(err);
+      req.url.should.equal("http://localhost:3000/test");
+      req.headers.Range.should.equal("items 0-4");
+      done();
+    });
+  });
+
+  it("should make a range request(promise)", function(done) {
+    client.get("/test", {
+      range: "items 0-4",
+      test: true
+    }).then(function(req) {
       req.url.should.equal("http://localhost:3000/test");
       req.headers.Range.should.equal("items 0-4");
       done();

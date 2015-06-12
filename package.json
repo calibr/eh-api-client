@@ -1,6 +1,6 @@
 {
   "name": "eh-api-client",
-  "version": "0.7.3",
+  "version": "0.7.4",
   "description": "Node.js rest client",
   "main": "index.js",
   "scripts": {
@@ -13,6 +13,7 @@
   "author": "calibr <awcalibr@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "q": "^1.4.1",
     "request": "^2.55.0"
   },
   "devDependencies": {
