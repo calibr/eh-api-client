@@ -1,6 +1,6 @@
 {
   "name": "eh-api-client",
-  "version": "0.8.3",
+  "version": "0.8.4",
   "description": "Node.js rest client",
   "main": "index.js",
   "scripts": {

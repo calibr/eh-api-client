@@ -2,7 +2,7 @@ var
   request = require("request"),
   Q = require("q");
 
-function buildError(res, data) {
+function buildError(res, data, url) {
   var error = new Error();
   if(typeof data === "object") {
     for(var  k in data) {
@@ -10,6 +10,9 @@ function buildError(res, data) {
     }
   }
   error.httpStatus = res.statusCode;
+  if(url) {
+    error.httpURL = url;
+  }
   return error;
 }
 
@@ -125,7 +128,7 @@ Client.prototype.request = function(method, options, body, cb) {
       return deferred.reject(err);
     }
     if(res.statusCode < 200 || res.statusCode >= 300) {
-      deferred.reject(buildError(res, data), null, res);
+      deferred.reject(buildError(res, data, reqParams.url), null, res);
     }
     deferred.resolve(data);
   });
