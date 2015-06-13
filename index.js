@@ -114,7 +114,7 @@ Client.prototype.request = function(method, options, body, cb) {
   }
   request(reqParams, function(err, res, data) {
     if(err) {
-      deferred.reject(err);
+      return deferred.reject(err);
     }
     if(res.statusCode < 200 || res.statusCode >= 300) {
       deferred.reject(buildError(res, data), null, res);
