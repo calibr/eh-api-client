@@ -158,7 +158,7 @@ methods.forEach(function(method) {
     var args = Array.prototype.slice.call(arguments);
     args.unshift(method);
     var c = new Client(this.apiURL);
-    c.request.apply(c, args);
+    return c.request.apply(c, args);
   };
 });
 

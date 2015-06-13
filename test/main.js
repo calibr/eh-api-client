@@ -7,6 +7,18 @@ var f = new Factory("http://localhost:3000");
 var client = f.getClient(1, "web");
 var enc = encodeURIComponent;
 
+describe("Test factory methods", function(done) {
+  it("get", function() {
+    f.get({
+      test: true,
+      url: "test"
+    }).then(function(res) {
+      res.should.type("object");
+      done();
+    });
+  });
+});
+
 describe("Internal Auth Client test", function() {
   var noteGlobalId = ehGuid.gen();
 
