@@ -29,8 +29,9 @@ describe("Internal Auth Client test", function() {
   });
 
   it("get note", function(done) {
-    client.get("/notes/" + noteGlobalId, function(err, data) {
+    client.get("/notes/" + noteGlobalId, function(err, data, res) {
       should.not.exists(err);
+      res.should.type("object");
       data.title.should.equal("test note");
       data.globalId.should.equal(noteGlobalId);
       done();

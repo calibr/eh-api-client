@@ -105,7 +105,14 @@ Client.prototype.request = function(method, options, body, cb) {
   if(options.range) {
     reqParams.headers.Range = options.range;
   }
-  deferred.promise.nodeify(cb);
+  // _res will store result of http request, for return in callback
+  var _res;
+  deferred.promise.nodeify(function(err, data) {
+    if(!cb) {
+      return;
+    }
+    cb(err, data, _res);
+  });
   if(options.test) {
     process.nextTick(function() {
       deferred.resolve(reqParams);
@@ -113,13 +120,14 @@ Client.prototype.request = function(method, options, body, cb) {
     return deferred.promise;
   }
   request(reqParams, function(err, res, data) {
+    _res = res;
     if(err) {
       return deferred.reject(err);
     }
     if(res.statusCode < 200 || res.statusCode >= 300) {
       deferred.reject(buildError(res, data), null, res);
     }
-    deferred.resolve(data, res);
+    deferred.resolve(data);
   });
   return deferred.promise;
 };
