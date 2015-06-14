@@ -78,7 +78,7 @@ Client.prototype.request = function(method, options, body, cb) {
     qs: {},
     headers: {}
   };
-  if(body) {
+  if(body && !body._read) {
     reqParams.body = body;
   }
   if(this.lockUUID) {
@@ -126,7 +126,7 @@ Client.prototype.request = function(method, options, body, cb) {
     });
     return deferred.promise;
   }
-  request(reqParams, function(err, res, data) {
+  var req = request(reqParams, function(err, res, data) {
     _res = res;
     if(err) {
       return deferred.reject(err);
@@ -136,6 +136,9 @@ Client.prototype.request = function(method, options, body, cb) {
     }
     deferred.resolve(data);
   });
+  if(body && body._read) {
+    body.pipe(req);
+  }
   return deferred.promise;
 };
 
