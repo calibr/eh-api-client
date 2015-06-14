@@ -1,6 +1,7 @@
 var
   request = require("request"),
-  Q = require("q");
+  Q = require("q"),
+  _ = require("lodash");
 
 function buildError(res, data, url) {
   var error = new Error();
@@ -107,6 +108,9 @@ Client.prototype.request = function(method, options, body, cb) {
   }
   if(options.range) {
     reqParams.headers.Range = options.range;
+  }
+  if(options.headers) {
+    _.assign(reqParams.headers, options.headers);
   }
   // _res will store result of http request, for return in callback
   var _res;

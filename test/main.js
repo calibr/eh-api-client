@@ -17,10 +17,39 @@ describe("Test factory methods", function(done) {
       done();
     });
   });
+
+  it("post with headers", function(done) {
+    var headers = {
+      "x-custom-header-1": "1",
+      "x-custom-header-2": "2"
+    };
+    f.post({
+      test: true,
+      url: "temp",
+      headers: headers
+    }).then(function(res) {
+      res.headers.should.eql(headers);
+    }).done(done);
+  });
 });
 
 describe("Internal Auth Client test", function() {
   var noteGlobalId = ehGuid.gen();
+
+  it("post with headers", function(done) {
+    var headers = {
+      "x-custom-header-1": "1",
+      "x-custom-header-2": "2"
+    };
+    client.post({
+      test: true,
+      url: "temp",
+      headers: headers
+    }, function(err, res) {
+      res.headers.should.containDeep(headers);
+      done();
+    });
+  });
 
   it("get notes", function(done) {
     client.get("/notes/", function(err, data) {
