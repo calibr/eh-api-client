@@ -3,7 +3,7 @@ var
   Q = require("q"),
   _ = require("lodash");
 
-function buildError(res, data, url) {
+function buildError(res, data, url, method) {
   var error = new Error();
   if(typeof data === "object") {
     for(var  k in data) {
@@ -13,6 +13,9 @@ function buildError(res, data, url) {
   error.httpStatus = res.statusCode;
   if(url) {
     error.httpURL = url;
+  }
+  if(method) {
+    error.httpMethod = method;
   }
   return error;
 }
@@ -70,12 +73,13 @@ Client.prototype.request = function(method, options, body, cb) {
     for(var k in body) {
       options[k] = body[k];
     }
+    body = null;
   }
   var reqParams = {
     url: this.apiURL + _url(options.url),
     method: method,
     json: true,
-    qs: {},
+    qs: (options.qs ? _.clone(options.qs) : {}),
     headers: {}
   };
   if(body && !body._read) {
@@ -97,8 +101,17 @@ Client.prototype.request = function(method, options, body, cb) {
           continue;
         }
         filter.field = key;
-        filter.value = filter[key];
-        filter.type = "eq";
+        var type = "eq";
+        var value = filter[key];
+        if(value instanceof Array) {
+          type = "in";
+        }
+        else if(typeof value === "object") {
+          type = Object.keys(value)[0];
+          value = value[type];
+        }
+        filter.value = value;
+        filter.type = type;
       }
       filterFields.push(filter.field);
       reqParams.qs["filterValue_" + filter.field] = filter.value;
@@ -132,7 +145,13 @@ Client.prototype.request = function(method, options, body, cb) {
       return deferred.reject(err);
     }
     if(res.statusCode < 200 || res.statusCode >= 300) {
-      deferred.reject(buildError(res, data, reqParams.url), null, res);
+      if(res.statusCode === 404 && options.notFoundIsNull) {
+        // do not generate 404 error, return null as result
+        data = null;
+      }
+      else {
+        deferred.reject(buildError(res, data, reqParams.url, method), null, res);
+      }
     }
     deferred.resolve(data);
   });
