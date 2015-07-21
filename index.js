@@ -59,6 +59,7 @@ Client.prototype.fork = function(subUrl) {
 
 Client.prototype.request = function(method, options, body, cb) {
   var deferred = Q.defer();
+  var self = this;
   if(typeof body === "function") {
     cb = body;
     body = undefined;
@@ -139,7 +140,7 @@ Client.prototype.request = function(method, options, body, cb) {
     });
     return deferred.promise;
   }
-  var req = request(reqParams, function(err, res, data) {
+  var req = self._makeRequest(reqParams, function(err, res, data) {
     _res = res;
     if(err) {
       return deferred.reject(err);
@@ -161,6 +162,10 @@ Client.prototype.request = function(method, options, body, cb) {
   return deferred.promise;
 };
 
+Client.prototype._makeRequest = function() {
+  return request.apply(this, arguments);
+};
+
 Client.prototype.release = function(cb) {
   this.delete("/locks/" + this.lockUUID, function(err, data) {
     if(err) {
@@ -168,6 +173,23 @@ Client.prototype.release = function(cb) {
     }
     cb(null);
   });
+};
+
+Client.prototype.exists = function(url, options, cb) {
+  if(typeof options === "function") {
+    cb = options;
+    options = null;
+  }
+  return this.request("head", url, options).then(function() {
+    return true;
+  }).catch(function(err) {
+    if(err) {
+      if(err.httpStatus === 404) {
+        return false;
+      }
+      throw err;
+    }
+  }).nodeify(cb);
 };
 
 methods.forEach(function(method) {
@@ -180,6 +202,13 @@ methods.forEach(function(method) {
 
 var Factory = function(apiURL) {
   this.apiURL = apiURL;
+};
+
+Factory.Client = Client;
+
+Factory.prototype.exists = function() {
+  var c = new Client(this.apiURL);
+  return c.exists.apply(c, arguments);
 };
 
 methods.forEach(function(method) {
