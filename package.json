@@ -15,9 +15,10 @@
   "dependencies": {
     "lodash": "^3.9.3",
     "q": "^1.4.1",
-    "request": "^2.55.0"
+    "requestretry": "^1.4.0"
   },
   "devDependencies": {
+    "async": "^1.4.0",
     "eh-guid": "^0.2.0",
     "should": "^6.0.3",
     "sinon": "^1.15.4"

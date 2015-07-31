@@ -1,7 +1,8 @@
 var
-  request = require("request"),
+  request = require("requestretry"),
   Q = require("q"),
-  _ = require("lodash");
+  _ = require("lodash"),
+  Agent = require("http").Agent;
 
 function buildError(res, data, url, method) {
   var error = new Error();
@@ -49,11 +50,13 @@ var Client = function(apiURL, options) {
   this.lockUUID = options.lockUUID;
   this.internalAuth = options.internalAuth;
   this.apiURL = apiURL;
+  this._factory = null;
 };
 
 Client.prototype.fork = function(subUrl) {
   apiURL = this.apiURL + _url(subUrl);
   var newClient = new Client(apiURL, this._options);
+  newClient._factory = this._factory;
   return newClient;
 };
 
@@ -162,8 +165,10 @@ Client.prototype.request = function(method, options, body, cb) {
   return deferred.promise;
 };
 
-Client.prototype._makeRequest = function() {
-  return request.apply(this, arguments);
+Client.prototype._makeRequest = function(params, cb) {
+  params.agent = this._factory.agent;
+  _.extend(params, this._factory.retryOptions);
+  return request(params, cb);
 };
 
 Client.prototype.release = function(cb) {
@@ -202,9 +207,33 @@ methods.forEach(function(method) {
 
 var Factory = function(apiURL) {
   this.apiURL = apiURL;
+  this.retryOptions = {
+    maxAttempts: 5,
+    retryDelay: 100,
+    retryStrategy: request.RetryStrategies.NetworkError
+  };
+  this.agent = new Agent({
+    keepAlive: true,
+    maxSockets: 1000
+  });
 };
 
 Factory.Client = Client;
+
+Factory.prototype.setRetryOptions = function(options) {
+  var self = this;
+  var allowOpts = ["maxAttempts", "retryDelay", "retryStrategy"];
+  allowOpts.forEach(function(k) {
+    if(k in options) {
+      self.retryOptions[k] = options[k];
+    }
+  });
+};
+
+Factory.prototype.setAgentOptions = function(options) {
+  _.defaults(options, {keepAlive: true});
+  self.agent = new Agent(options);
+};
 
 Factory.prototype.exists = function() {
   var c = new Client(this.apiURL);
@@ -216,6 +245,7 @@ methods.forEach(function(method) {
     var args = Array.prototype.slice.call(arguments);
     args.unshift(method);
     var c = new Client(this.apiURL);
+    c._factory = this;
     return c.request.apply(c, args);
   };
 });
@@ -245,6 +275,7 @@ Factory.prototype.getLock = function(options, cb) {
     var client = new Client(self.apiURL, {
       lockUUID: data.uuid
     });
+    client._factory = self;
     cb(null, client);
   });
 };
@@ -254,9 +285,11 @@ Factory.prototype.getLock = function(options, cb) {
  * @param  {String} app
  */
 Factory.prototype.getClient = function(userId, app) {
-  return new Client(this.apiURL, {
+  var client = new Client(this.apiURL, {
     internalAuth: userId + ":" + app
   });
+  client._factory = this;
+  return client;
 };
 
 module.exports = Factory;
