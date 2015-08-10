@@ -237,6 +237,7 @@ Factory.prototype.setAgentOptions = function(options) {
 
 Factory.prototype.exists = function() {
   var c = new Client(this.apiURL);
+  c._factory = this;
   return c.exists.apply(c, arguments);
 };
 
