@@ -101,47 +101,65 @@ describe("Internal Auth Client test", function() {
   });
 
   it("should make correct filter request", function(done) {
+    var filter = [
+      {key: 1},
+      {
+        field: "id",
+        type: "gt",
+        value: 500
+      }
+    ];
     client.get({
       test: true,
       url: "test",
-      filter: [
-        {key: 1},
-        {
-          field: "id",
-          type: "gt",
-          value: 500
-        }
-      ]
+      filter: filter
     }, function(err, req) {
       should.not.exists(err);
-      req.qs.filterFields.should.eql(["key", "id"]);
-      req.qs.filterType_key.should.equal("eq");
-      req.qs.filterValue_key.should.equal(1);
-      req.qs.filterType_id.should.equal("gt");
-      req.qs.filterValue_id.should.equal(500);
+      req.qs.filter.should.eql(encodeURIComponent(JSON.stringify(filter)));
+      done();
+    });
+  });
+
+  it("should make a order request", function(done) {
+    var order = ['date_updated', 'asc'];
+    client.get("/test", {
+      order: order,
+      test: true
+    }, function(err, req) {
+      should.not.exists(err);
+      req.url.should.equal("http://localhost:3000/test");
+      req.qs.order.should.eql(encodeURIComponent(JSON.stringify(order)));
       done();
     });
   });
 
   it("should make a range request", function(done) {
+    var range =  {
+      limit: 10,
+      offset: 0
+    };
     client.get("/test", {
-      range: "items 0-4",
+      range: range,
       test: true
     }, function(err, req) {
       should.not.exists(err);
       req.url.should.equal("http://localhost:3000/test");
-      req.headers.Range.should.equal("items 0-4");
+      req.qs.range.should.eql(encodeURIComponent(JSON.stringify(range)));
       done();
     });
   });
 
   it("should make a range request(promise)", function(done) {
+    var range =  {
+      limit: 10,
+      offset: 0
+    };
     client.get("/test", {
-      range: "items 0-4",
+      range: range,
       test: true
     }).then(function(req) {
       req.url.should.equal("http://localhost:3000/test");
-      req.headers.Range.should.equal("items 0-4");
+      req.qs.range.should.eql(encodeURIComponent(JSON.stringify(range)));
       done();
     });
   });

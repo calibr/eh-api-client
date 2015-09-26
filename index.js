@@ -96,35 +96,13 @@ Client.prototype.request = function(method, options, body, cb) {
     reqParams.headers.Authorization = "Internal " + this.internalAuth;
   }
   if(options.filter) {
-    var filterFields = [];
-    for(var i = 0; i != options.filter.length; i++) {
-      var filter = options.filter[i];
-      if(!filter.field) {
-        var key = Object.keys(filter)[0];
-        if(!key) {
-          continue;
-        }
-        filter.field = key;
-        var type = "eq";
-        var value = filter[key];
-        if(value instanceof Array) {
-          type = "in";
-        }
-        else if(typeof value === "object") {
-          type = Object.keys(value)[0];
-          value = value[type];
-        }
-        filter.value = value;
-        filter.type = type;
-      }
-      filterFields.push(filter.field);
-      reqParams.qs["filterValue_" + filter.field] = filter.value;
-      reqParams.qs["filterType_" + filter.field] = filter.type;
-    }
-    reqParams.qs["filterFields"] = filterFields;
+    reqParams.qs.filter = (JSON.stringify(options.filter));
   }
   if(options.range) {
-    reqParams.headers.Range = options.range;
+    reqParams.qs.range = (JSON.stringify(options.range));
+  }
+  if(options.order) {
+    reqParams.qs.order = (JSON.stringify(options.order));
   }
   if(options.headers) {
     _.assign(reqParams.headers, options.headers);
