@@ -63,7 +63,7 @@ describe("Internal Auth Client test", function() {
       done();
     });
   });
-
+/*
   it("get notes list", function(done) {
     client.get("/notes/", function(err, data) {
       should.not.exists(err);
@@ -99,23 +99,21 @@ describe("Internal Auth Client test", function() {
       done();
     }).done();
   });
-
+*/
   it("should make correct filter request", function(done) {
-    var filter = [
-      {key: 1},
-      {
-        field: "id",
-        type: "gt",
-        value: 500
+    var filter = {
+      key: 1,
+      "id": {
+        "gt": 500
       }
-    ];
+    };
     client.get({
       test: true,
       url: "test",
       filter: filter
     }, function(err, req) {
       should.not.exists(err);
-      req.qs.filter.should.eql(encodeURIComponent(JSON.stringify(filter)));
+      req.qs.filter.should.eql(JSON.stringify(filter));
       done();
     });
   });
@@ -128,7 +126,7 @@ describe("Internal Auth Client test", function() {
     }, function(err, req) {
       should.not.exists(err);
       req.url.should.equal("http://localhost:3000/test");
-      req.qs.order.should.eql(encodeURIComponent(JSON.stringify(order)));
+      req.qs.order.should.eql(JSON.stringify(order));
       done();
     });
   });
@@ -144,7 +142,7 @@ describe("Internal Auth Client test", function() {
     }, function(err, req) {
       should.not.exists(err);
       req.url.should.equal("http://localhost:3000/test");
-      req.qs.range.should.eql(encodeURIComponent(JSON.stringify(range)));
+      req.qs.range.should.eql(JSON.stringify(range));
       done();
     });
   });
@@ -159,7 +157,7 @@ describe("Internal Auth Client test", function() {
       test: true
     }).then(function(req) {
       req.url.should.equal("http://localhost:3000/test");
-      req.qs.range.should.eql(encodeURIComponent(JSON.stringify(range)));
+      req.qs.range.should.eql(JSON.stringify(range));
       done();
     });
   });
