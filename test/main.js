@@ -8,6 +8,14 @@ var f = new Factory("http://localhost:3000");
 var client = f.getClient(1, "web");
 var enc = encodeURIComponent;
 
+describe("Common", function() {
+  it("Different factories should have different Client classes", function() {
+    var fact1 = new Factory("http://test.com");
+    var fact2 = new Factory("http://test.com");
+    fact1.Client.should.not.equal(fact2.Client);
+  });
+});
+
 describe("Test factory methods", function() {
   it("get", function(done) {
     f.get({

@@ -66,12 +66,12 @@ describe("#exists", function() {
 
   describe("resource exists", function() {
     before(function() {
-      sinon.stub(Factory.Client.prototype, "_makeRequest", function(params, cb) {
+      sinon.stub(factory.Client.prototype, "_makeRequest", function(params, cb) {
         cb(null, {statusCode: 200});
       });
     });
     after(function() {
-      Factory.Client.prototype._makeRequest.restore();
+      factory.Client.prototype._makeRequest.restore();
     });
     it("should return true(factory)", function(done) {
       factory.exists("any url", function(err, exists) {
@@ -91,12 +91,12 @@ describe("#exists", function() {
 
   describe("resource not exists", function() {
     before(function() {
-      sinon.stub(Factory.Client.prototype, "_makeRequest", function(params, cb) {
+      sinon.stub(factory.Client.prototype, "_makeRequest", function(params, cb) {
         cb(null, {statusCode: 404});
       });
     });
     after(function() {
-      Factory.Client.prototype._makeRequest.restore();
+      factory.Client.prototype._makeRequest.restore();
     });
     it("should return true(factory)", function(done) {
       factory.exists("any url", function(err, exists) {
