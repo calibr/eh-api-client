@@ -46,6 +46,37 @@ describe("Test factory methods", function() {
   });
 });
 
+describe("Create client from context", function() {
+  it("should create client from context", function() {
+    var context = {
+      userId: 1,
+      remoteAppCode: "app",
+      requestId: "request-id",
+      sessionId: "session-id"
+    };
+    var client = f.getClientByContext(context);
+    client.requestId.should.equal(context.requestId);
+    client.sessionId.should.equal(context.sessionId);
+    client.internalAuth.should.equal(context.userId + ":" + context.remoteAppCode);
+  });
+});
+
+describe("Send requestId/sessionId", function() {
+  it("should set requestId and sessionId in header", function(done) {
+    var client = f.getClient();
+    client.setRequestId("request-id");
+    client.setSessionId("session-id");
+    client.request("GET", {
+      test: true,
+      url: "/"
+    }, function(err, params) {
+      params.headers["x-request-id"].should.equal("request-id");
+      params.headers["x-session-id"].should.equal("session-id");
+      done();
+    });
+  });
+});
+
 describe("Internal Auth Client test", function() {
   var noteGlobalId = ehGuid.gen();
 
@@ -63,43 +94,7 @@ describe("Internal Auth Client test", function() {
       done();
     });
   });
-/*
-  it("get notes list", function(done) {
-    client.get("/notes/", function(err, data) {
-      should.not.exists(err);
-      data.should.be.an.instanceOf(Array);
-      done();
-    });
-  });
 
-  it("create note", function(done) {
-    client.patch("/notes/" + noteGlobalId, {
-      title: "test note",
-      parentId: "default"
-    }, function(err) {
-      should.not.exists(err);
-      done();
-    });
-  });
-
-  it("get note", function(done) {
-    client.get("/notes/" + noteGlobalId, function(err, data, res) {
-      should.not.exists(err);
-      res.should.type("object");
-      data.title.should.equal("test note");
-      data.globalId.should.equal(noteGlobalId);
-      done();
-    });
-  });
-
-  it("get note(promise)", function(done) {
-    client.get("/notes/" + noteGlobalId).then(function(data) {
-      data.title.should.equal("test note");
-      data.globalId.should.equal(noteGlobalId);
-      done();
-    }).done();
-  });
-*/
   it("should make correct filter request", function(done) {
     var filter = {
       key: 1,

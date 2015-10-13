@@ -50,6 +50,8 @@ var Client = function(apiURL, options) {
   this.lockUUID = options.lockUUID;
   this.internalAuth = options.internalAuth;
   this.apiURL = apiURL;
+  this.requestId = null;
+  this.sessionId = null;
   this._factory = null;
 };
 
@@ -58,6 +60,14 @@ Client.prototype.fork = function(subUrl) {
   var newClient = new Client(apiURL, this._options);
   newClient._factory = this._factory;
   return newClient;
+};
+
+Client.prototype.setRequestId = function(requestId) {
+  this.requestId = requestId;
+};
+
+Client.prototype.setSessionId = function(sessionId) {
+  this.sessionId = sessionId;
 };
 
 Client.prototype.request = function(method, options, body, cb) {
@@ -94,6 +104,12 @@ Client.prototype.request = function(method, options, body, cb) {
   }
   if(this.internalAuth) {
     reqParams.headers.Authorization = "Internal " + this.internalAuth;
+  }
+  if(this.requestId) {
+    reqParams.headers["x-request-id"] = this.requestId;
+  }
+  if(this.sessionId) {
+    reqParams.headers["x-session-id"] = this.sessionId;
   }
   if(options.filter) {
     reqParams.qs.filter = (JSON.stringify(options.filter));
@@ -267,6 +283,21 @@ Factory.prototype.getClient = function(userId, app) {
   var client = new Client(this.apiURL, {
     internalAuth: userId + ":" + app
   });
+  client._factory = this;
+  return client;
+};
+
+/**
+ * @param  {Number} userId
+ * @param  {String} app
+ */
+
+Factory.prototype.getClientByContext = function(context) {
+  var client = new Client(this.apiURL, {
+    internalAuth: context.userId + ":" + context.remoteAppCode
+  });
+  client.setRequestId(context.requestId);
+  client.setSessionId(context.sessionId);
   client._factory = this;
   return client;
 };
