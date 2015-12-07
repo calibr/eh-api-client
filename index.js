@@ -55,6 +55,9 @@ getClientClass.methods.forEach(function(method) {
  * @param  {String} app
  */
 Factory.prototype.getClient = function(userId, app) {
+  if(!userId) {
+    userId = 0;
+  }
   var client = new this.Client(this.apiURL, {
     internalAuth: userId + ":" + app
   });
