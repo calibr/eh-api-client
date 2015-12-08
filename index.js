@@ -15,6 +15,9 @@ var Factory = function(apiURL) {
     keepAlive: true,
     maxSockets: 1000
   });
+  this.requestOptions = {
+    timeout: 300000
+  };
   this.Client = getClientClass();
 };
 
@@ -28,9 +31,13 @@ Factory.prototype.setRetryOptions = function(options) {
   });
 };
 
+Factory.prototype.setRequestOptions = function(options) {
+  _.extend(this.requestOptions, options);
+};
+
 Factory.prototype.setAgentOptions = function(options) {
   _.defaults(options, {keepAlive: true});
-  self.agent = new Agent(options);
+  this.agent = new Agent(options);
 };
 
 Factory.prototype.exists = function() {

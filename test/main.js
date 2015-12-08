@@ -88,12 +88,12 @@ describe("Send requestId/sessionId", function() {
 describe("Internal Auth Client test", function() {
   var noteGlobalId = ehGuid.gen();
 
-  it("create client with userId = undefined should create guest client", function(done) {
+  it("create client with userId = undefined should create guest client", function() {
     var c = f.getClient(undefined, "web");
     c.internalAuth.should.equal("0:web");
   });
 
-  it("create client with userId = null should create guest client", function(done) {
+  it("create client with userId = null should create guest client", function() {
     var c = f.getClient(null, "web");
     c.internalAuth.should.equal("0:web");
   });

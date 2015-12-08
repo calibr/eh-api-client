@@ -50,7 +50,8 @@ describe("Keep Alive", function() {
           if(!err) {
             return setTimeout(next, SERVER_TIMEOUT - 5);
           }
-          err.code.should.equal("ECONNRESET");
+          err.name.should.equal("NetworkError");
+          err.message.should.equal("ECONNRESET");
           done();
         });
       }, function() {
