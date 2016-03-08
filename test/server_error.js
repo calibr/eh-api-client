@@ -3,8 +3,7 @@ var
   should = require("should"),
   sinon = require("sinon"),
   http = require("http"),
-  async = require("async"),
-  request = require("requestretry");
+  async = require("async");
 
 var SERVER_PORT = 8591;
 var url = "http://localhost:" + SERVER_PORT;
@@ -27,10 +26,6 @@ describe("Server Error", function() {
     // disable keeping alive
     client.setAgentOptions({
       keepAlive: false
-    });
-    // retry only on network error
-    client.setRetryOptions({
-      retryStrategy: request.RetryStrategies.NetworkError
     });
     var s;
     before(function(done) {
@@ -66,10 +61,6 @@ describe("Server Error", function() {
     // disable keeping alive
     client.setAgentOptions({
       keepAlive: false
-    });
-    // retry only on network error
-    client.setRetryOptions({
-      retryStrategy: request.RetryStrategies.HttpError
     });
     var s;
     before(function(done) {

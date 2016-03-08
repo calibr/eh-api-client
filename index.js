@@ -1,5 +1,5 @@
 var
-  request = require("requestretry"),
+  request = require("request"),
   _ = require("lodash"),
   Agent = require("http").Agent,
   getClientClass = require("./lib/client");
@@ -9,7 +9,10 @@ var Factory = function(apiURL) {
   this.retryOptions = {
     maxAttempts: 5,
     retryDelay: 100,
-    retryStrategy: request.RetryStrategies.NetworkError
+    retryStrategy: function(err) {
+      // only retry if got an ECONNRESET error
+      return err.code === "ECONNRESET";
+    }
   };
   this.agent = new Agent({
     keepAlive: true,
@@ -85,6 +88,33 @@ Factory.prototype.getClientByContext = function(context) {
   client.setSessionId(context.sessionId);
   client._factory = this;
   return client;
+};
+
+Factory.prototype.getPoolStats = function() {
+  var hostsSocketsCount = {};
+  var host;
+  if(typeof this.agent.freeSockets === "object") {
+    for(host in this.agent.freeSockets) {
+      if(!hostsSocketsCount[host]) {
+        hostsSocketsCount[host] = 0;
+      }
+      hostsSocketsCount[host] += this.agent.freeSockets[host].length;
+    }
+  }
+  if(typeof this.agent.sockets === "object") {
+    for(host in this.agent.sockets) {
+      if(!hostsSocketsCount[host]) {
+        hostsSocketsCount[host] = 0;
+      }
+      hostsSocketsCount[host] += this.agent.sockets[host].length;
+    }
+  }
+
+  var lines = [];
+  for(host in hostsSocketsCount) {
+    lines.push(host + ": " + hostsSocketsCount[host]);
+  }
+  return lines.join("\n");
 };
 
 module.exports = Factory;
