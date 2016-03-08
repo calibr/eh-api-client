@@ -10,6 +10,9 @@
     "type": "git",
     "url": "https://github.com/calibr/eh-api-client"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "author": "calibr <awcalibr@gmail.com>",
   "license": "ISC",
   "dependencies": {
