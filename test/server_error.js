@@ -43,9 +43,8 @@ describe("Server Error", function() {
     });
 
     it("should return server error on 5xx http status", function(done) {
-      client.get("/", function(err, data) {
+      client.get("/", function(err) {
         err.name.should.equal("ServerError");
-        err.httpStatus.should.equal(503);
         done();
       });
     });
@@ -80,7 +79,7 @@ describe("Server Error", function() {
     });
 
     it("should return network error when timeout out", function(done) {
-      client.get("/", function(err, data) {
+      client.get("/", function(err) {
         err.name.should.equal("NetworkError");
         err.message.should.equal("ETIMEDOUT");
         done();
