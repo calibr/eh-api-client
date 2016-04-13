@@ -16,14 +16,15 @@
   "author": "calibr <awcalibr@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "bluebird": "^3.3.5",
     "lodash": "^3.9.3",
-    "q": "^1.4.1",
-    "request": "^2.69.0"
+    "request": "^2.71.0"
   },
   "devDependencies": {
     "async": "^1.4.0",
     "eh-guid": "^0.2.0",
     "should": "^6.0.3",
-    "sinon": "^1.15.4"
+    "sinon": "^1.15.4",
+    "mocha": "^2.4.5"
   }
 }
