@@ -56,8 +56,9 @@ describe("#exists", function() {
 
     it("should be error", function(done) {
       returnStatus = 500;
-      factory.exists("/test", function(err) {
+      factory.exists("/test", function(err, data, res) {
         should.exist(err);
+        res.statusCode.should.equal(500);
         done();
       });
     });

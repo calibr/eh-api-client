@@ -43,8 +43,9 @@ describe("Server Error", function() {
     });
 
     it("should return server error on 5xx http status", function(done) {
-      client.get("/", function(err) {
+      client.get("/", function(err, data, res) {
         err.name.should.equal("ServerError");
+        res.statusCode.should.equal(503);
         done();
       });
     });
