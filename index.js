@@ -9,7 +9,10 @@ var Factory = function(apiURL) {
   this.retryOptions = {
     maxAttempts: 5,
     retryDelay: 100,
-    retryStrategy: function(err) {
+    retryStrategy: function(err, params) {
+      if(params && params.method && params.method.toLowerCase() !== "get") {
+        return false;
+      }
       // only retry if got an ECONNRESET error
       return err.code === "ECONNRESET";
     }

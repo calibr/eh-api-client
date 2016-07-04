@@ -103,6 +103,53 @@ describe("Keep Alive", function() {
     });
   });
 
+  describe("POST use with retry if network error(Default behavior)", function() {
+    var client = new Factory(url);
+    var s;
+    var requestsProcessed = 0;
+    before(function(done) {
+      createServer(function(_s) {
+        s = _s;
+        s.on("request", function(req, res) {
+          requestsProcessed++;
+          res.end("done");
+        });
+        s.timeout = SERVER_TIMEOUT;
+        done();
+      });
+    });
+    after(function(done) {
+      s.close(done);
+    });
+
+    it("request shouldn't be retried", function(done) {
+      var gotTryMoreThan1 = false;
+      var gotReset;
+      async.timesSeries(10, function(n, next) {
+        client.post("/", {}, function(err, data, res) {
+          if(err && err.message === "ECONNRESET") {
+            gotReset = true;
+          }
+          else {
+            data.should.equal("done");
+            if(res.retryInfo.try > 1) {
+              gotTryMoreThan1 = true;
+            }
+          }
+          setTimeout(next, SERVER_TIMEOUT - 5);
+        });
+      }, function() {
+        gotTryMoreThan1.should.equal(false);
+        gotReset.should.equal(true);
+        done();
+      });
+    });
+
+    it("count processed requests by server should match count of requests by client", function() {
+      requestsProcessed.should.be.lessThan(10);
+    });
+  });
+
   describe("clients should share the factory's connection pool", function() {
     var factory = new Factory(url);
     var s;
