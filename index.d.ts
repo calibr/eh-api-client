@@ -15,7 +15,9 @@ declare module "eh-api-client" {
     head(options, body?, cb?): Promise<any>;
     patch(options, body?, cb?): Promise<any>;
     delete(options, body?, cb?): Promise<any>;
-    prototype: any; // for tests
+    setSessionId(sessionId: string): void;
+    setRequestId(requestId: string): void;
+    prototype: any;
   }
 
   class APIFactory {
