@@ -25,6 +25,15 @@ var Factory = function(apiURL) {
     timeout: 300000
   };
   this.Client = getClientClass();
+  this._client;
+
+  this.__defineGetter__("client", function() {
+    if(!this._client) {
+      this._client = new this.Client(this.apiURL);
+      this._client._factory = this;
+    }
+    return this._client;
+  });
 };
 
 Factory.prototype.setRetryOptions = function(options) {
@@ -56,9 +65,7 @@ getClientClass.methods.forEach(function(method) {
   Factory.prototype[method.toLowerCase()] = function() {
     var args = Array.prototype.slice.call(arguments);
     args.unshift(method);
-    var c = new this.Client(this.apiURL);
-    c._factory = this;
-    return c.request.apply(c, args);
+    return this.client.request.apply(this.client, args);
   };
 });
 

@@ -4,8 +4,7 @@
 
 /// <reference path="./typings/bluebird.d.ts" />
 
-declare module "eh-api-client" {
-  class Client {
+declare class Client {
     fork(subUrl): Client;
     request(method): Promise<any>;
     exists(url, options?, cb?): Promise<boolean>;
@@ -18,9 +17,9 @@ declare module "eh-api-client" {
     setSessionId(sessionId: string): void;
     setRequestId(requestId: string): void;
     prototype: any;
-  }
+}
 
-  class APIFactory {
+declare class APIFactory {
     Client: Client;
     getClientByContext(context: any): Client;
     constructor(apiURL);
@@ -34,7 +33,6 @@ declare module "eh-api-client" {
     head(options, body?, cb?): Promise<any>;
     patch(options, body?, cb?): Promise<any>;
     delete(options, body?, cb?): Promise<any>;
-  }
-
-  export = APIFactory
 }
+
+export = APIFactory
