@@ -27,6 +27,7 @@ declare class APIFactory {
     setAgentOptions(options: any);
     exists(options?, cb?): Promise<boolean>;
     getClient(userId: number, app: string): Client;
+    getRawClient(): Client;
     get(options, body?, cb?): Promise<any>;
     post(options, body?, cb?): Promise<any>;
     put(options, body?, cb?): Promise<any>;
