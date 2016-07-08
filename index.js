@@ -1,8 +1,14 @@
 var
   request = require("request"),
   _ = require("lodash"),
-  Agent = require("http").Agent,
+  Agent = require('agentkeepalive'),
   getClientClass = require("./lib/client");
+
+var defaultAgentOptions = {
+  keepAlive: true,
+  // because node http server default timeout is 120 seconds, close socket before its timeout
+  keepAliveTimeout: 110000
+};
 
 var Factory = function(apiURL) {
   this.apiURL = apiURL;
@@ -17,10 +23,7 @@ var Factory = function(apiURL) {
       return err.code === "ECONNRESET";
     }
   };
-  this.agent = new Agent({
-    keepAlive: true,
-    maxSockets: 1000
-  });
+  this.agent = new Agent(defaultAgentOptions);
   this.requestOptions = {
     timeout: 300000
   };
@@ -51,7 +54,7 @@ Factory.prototype.setRequestOptions = function(options) {
 };
 
 Factory.prototype.setAgentOptions = function(options) {
-  _.defaults(options, {keepAlive: true});
+  _.defaults(options, defaultAgentOptions);
   this.agent = new Agent(options);
 };
 

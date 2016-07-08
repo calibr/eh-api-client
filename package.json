@@ -1,6 +1,6 @@
 {
   "name": "eh-api-client",
-  "version": "0.26.2",
+  "version": "0.27.0",
   "description": "Node.js rest client",
   "main": "index.js",
   "scripts": {
@@ -16,6 +16,7 @@
   "author": "calibr <awcalibr@gmail.com>",
   "license": "ISC",
   "dependencies": {
+    "agentkeepalive": "^2.2.0",
     "bluebird": "^3.3.5",
     "lodash": "^3.9.3",
     "request": "^2.71.0"

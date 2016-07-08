@@ -186,7 +186,7 @@ describe("Keep Alive", function() {
     it("should be 30 requests with only one connection", function() {
       connectionsMade.should.equal(1);
       requestsProcessed.should.equal(30);
-      factory.getPoolStats().should.equal("localhost:" + SERVER_PORT + ":: 1");
+      factory.getPoolStats().should.equal("localhost:" + SERVER_PORT + "::: 1");
     });
   });
 });
