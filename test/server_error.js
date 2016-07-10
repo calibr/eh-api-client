@@ -55,9 +55,6 @@ describe("Server Error", function() {
     this.timeout(10000);
 
     var client = new Factory(url);
-    client.setRequestOptions({
-      timeout: 1000
-    });
     // disable keeping alive
     client.setAgentOptions({
       keepAlive: false
@@ -80,9 +77,31 @@ describe("Server Error", function() {
     });
 
     it("should return network error when timeout out", function(done) {
-      client.get("/", function(err) {
+      client.get({
+        url: "/",
+        timeout: 1000
+      }, function(err) {
         err.name.should.equal("NetworkError");
         err.message.should.equal("ETIMEDOUT");
+        err.retryInfo.try.should.be.greaterThan(1);
+        err.retryInfo.strategySupported.should.equal(true);
+        done();
+      });
+    });
+
+    it("shouldn't return network error when set longer timeout", function(done) {
+      client.get({
+        url: "/",
+        timeout: 6000
+      }, function(err) {
+        should.not.exists(err);
+        done();
+      });
+    });
+
+    it("shouldn't return network error with default timeout", function(done) {
+      client.get("/", function(err) {
+        should.not.exists(err);
         done();
       });
     });
