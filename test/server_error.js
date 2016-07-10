@@ -59,6 +59,9 @@ describe("Server Error", function() {
     client.setAgentOptions({
       keepAlive: false
     });
+    client.setRequestOptions({
+      timeout: 1000
+    });
     var s;
     before(function(done) {
       createServer(function(_s) {
@@ -77,10 +80,7 @@ describe("Server Error", function() {
     });
 
     it("should return network error when timeout out", function(done) {
-      client.get({
-        url: "/",
-        timeout: 1000
-      }, function(err) {
+      client.get("/", function(err) {
         err.name.should.equal("NetworkError");
         err.message.should.equal("ETIMEDOUT");
         err.retryInfo.try.should.be.greaterThan(1);
@@ -99,7 +99,8 @@ describe("Server Error", function() {
       });
     });
 
-    it("shouldn't return network error with default timeout", function(done) {
+    it("shouldn't return network error with default factory timeout", function(done) {
+      client.requestOptions = {};
       client.get("/", function(err) {
         should.not.exists(err);
         done();
