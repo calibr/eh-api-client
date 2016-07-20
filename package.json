@@ -19,7 +19,7 @@
     "agentkeepalive": "^2.2.0",
     "bluebird": "^3.3.5",
     "lodash": "^3.9.3",
-    "request": "^2.71.0"
+    "request": "^2.73.0"
   },
   "devDependencies": {
     "async": "^1.4.0",

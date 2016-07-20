@@ -27,17 +27,6 @@ describe("Test factory methods", function() {
     }).done();
   });
 
-  it("send readable stream", function(done) {
-    var stream = fs.createReadStream(__filename);
-    f.post({
-      test: true,
-      url: "test"
-    }, stream, function(err, res) {
-      should.not.exists(res.body);
-      done();
-    });
-  });
-
   it("post with headers", function(done) {
     var headers = {
       "x-custom-header-1": "1",
