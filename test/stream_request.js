@@ -77,15 +77,7 @@ describe("Stream request", function() {
       createServer(function(_s) {
         s = _s;
         s.on("request", function(req, res) {
-          var gotData = "";
-          req.on("data", function(chunk) {
-            gotData += chunk.toString();
-          });
-          req.on("end", function() {
-            res.end(JSON.stringify({
-              requested: gotData
-            }));
-          })
+          req.socket.destroy();
         });
         done();
       });
@@ -94,14 +86,14 @@ describe("Stream request", function() {
       s.close(done);
     });
 
-    it("should stream request", function(done) {
+    it("shouldn't retry if body is a stream", function(done) {
       var stream = new TestReadStream({}, ["1", "2", "3"]);
       client.setAgentOptions({
         keepAlive: false
       });
       client.put("/", stream, function(err, data, res) {
-        should.not.exists(err);
-        data.requested.should.equal("123");
+        should.exists(err);
+        err.retryInfo.try.should.equal(1);
         done();
       });
     });
