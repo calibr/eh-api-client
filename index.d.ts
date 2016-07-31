@@ -2,8 +2,6 @@
 // Project: https://github.com/calibr/eh-api-client
 // Definitions by: Rusinov Maxim <https://github.com/rusmaxim>
 
-/// <reference path="./typings/bluebird.d.ts" />
-
 declare class Client {
     fork(subUrl): Client;
     request(method): Promise<any>;
