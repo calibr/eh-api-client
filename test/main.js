@@ -183,4 +183,17 @@ describe("Internal Auth Client test", function() {
       done();
     });
   });
+
+  it("should request with encoding", function(done) {
+    client.get({
+      url: "/test",
+      encoding: null
+    }, {
+      test: true
+    }, function(err, req) {
+      should.not.exists(err);
+      should.ok(req.hasOwnProperty('encoding'));
+      done();
+    });
+  });
 });
