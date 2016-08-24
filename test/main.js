@@ -54,7 +54,10 @@ describe("Create client from context", function() {
     var client = f.getClientByContext(context);
     client.requestId.should.equal(context.requestId);
     client.sessionId.should.equal(context.sessionId);
-    client.internalAuth.should.equal(context.userId + ":" + context.remoteAppCode);
+    client.auth.should.eql({
+      type: "Internal",
+      credentials: context.userId + ":" + context.remoteAppCode
+    });
   });
 });
 
@@ -74,17 +77,38 @@ describe("Send requestId/sessionId", function() {
   });
 });
 
+describe("getRawClient", function() {
+  it("should pass options to Client", function() {
+    var client = f.getRawClient({
+      auth: {
+        type: "Session",
+        credentials: "sss:app"
+      }
+    });
+    client.auth.should.eql({
+      type: "Session",
+      credentials: "sss:app"
+    });
+  });
+});
+
 describe("Internal Auth Client test", function() {
   var noteGlobalId = ehGuid.gen();
 
   it("create client with userId = undefined should create guest client", function() {
     var c = f.getClient(undefined, "web");
-    c.internalAuth.should.equal("0:web");
+    c.auth.should.eql({
+      type: "Internal",
+      credentials: "0:web"
+    });
   });
 
   it("create client with userId = null should create guest client", function() {
     var c = f.getClient(null, "web");
-    c.internalAuth.should.equal("0:web");
+    c.auth.should.eql({
+      type: "Internal",
+      credentials: "0:web"
+    });
   });
 
   it("post with headers", function(done) {

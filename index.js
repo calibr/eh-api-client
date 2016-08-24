@@ -90,8 +90,8 @@ Factory.prototype.getClient = function(userId, app) {
 
 /**
  */
-Factory.prototype.getRawClient = function() {
-  var client = new this.Client(this.apiURL);
+Factory.prototype.getRawClient = function(options) {
+  var client = new this.Client(this.apiURL, options);
   client._factory = this;
   return client;
 };
