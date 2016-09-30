@@ -19,8 +19,8 @@ var Factory = function(apiURL) {
       if(params && params.method && params.method.toLowerCase() !== "get") {
         return false;
       }
-      // only retry if got an ECONNRESET/ETIMEDOUT error
-      return err.code === "ECONNRESET" || err.code === "ETIMEDOUT";
+      // only retry if got an ECONNRESET/ETIMEDOUT/ESOCKETTIMEDOUT error
+      return err.code === "ECONNRESET" || err.code === "ETIMEDOUT" || err.code === "ESOCKETTIMEDOUT";
     }
   };
   this.agent = new Agent(defaultAgentOptions);

@@ -107,4 +107,38 @@ describe("Server Error", function() {
       });
     });
   });
+
+  describe("ESOCKETTIMEDOUT error", function() {
+    var s;
+    var client = new Factory(url);
+    before(function(done) {
+      createServer(function(_s) {
+        s = _s;
+        s.on("request", function(req, res) {
+          res.write("hello");
+          setTimeout(function() {
+            res.end("end");
+          }, 3000);
+        });
+        done();
+      });
+    });
+    after(function(done) {
+      s.close(done);
+    });
+
+    it("should try to perform the request multiple times", function(done) {
+      this.timeout(10000);
+      client.get({
+        url: "/",
+        timeout: 1000
+      }, function(err, res) {
+        should.exists(err);
+        err.code.should.equal("ESOCKETTIMEDOUT");
+        err.retryInfo.try.should.be.greaterThan(1);
+        err.retryInfo.strategySupported.should.equal(true);
+        done();
+      });
+    });
+  });
 });
