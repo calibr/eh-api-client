@@ -85,6 +85,10 @@ describe("Server Error", function() {
         err.message.should.equal("ETIMEDOUT");
         err.retryInfo.try.should.be.greaterThan(1);
         err.retryInfo.strategySupported.should.equal(true);
+        err.retryInfo.tryErrorHistory.length.should.equal(err.retryInfo.try - 1);
+        err.retryInfo.tryErrorHistory.forEach(function(err) {
+          err.message.should.equal("ETIMEDOUT");
+        });
         done();
       });
     });
