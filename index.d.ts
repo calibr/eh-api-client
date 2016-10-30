@@ -14,6 +14,7 @@ declare class Client {
     delete(options, body?, cb?): Promise<any>;
     setSessionId(sessionId: string): void;
     setRequestId(requestId: string): void;
+    addRequestModificator(modificator): void;
     prototype: any;
 }
 
