@@ -82,12 +82,12 @@ describe("Server Error", function() {
     it("should return network error when timeout out", function(done) {
       client.get("/", function(err) {
         err.name.should.equal("NetworkError");
-        err.message.should.equal("ETIMEDOUT");
+        err.message.should.equal("ESOCKETTIMEDOUT");
         err.retryInfo.try.should.be.greaterThan(1);
         err.retryInfo.strategySupported.should.equal(true);
         err.retryInfo.tryErrorHistory.length.should.equal(err.retryInfo.try - 1);
         err.retryInfo.tryErrorHistory.forEach(function(err) {
-          err.message.should.equal("ETIMEDOUT");
+          err.message.should.equal("ESOCKETTIMEDOUT");
         });
         done();
       });
