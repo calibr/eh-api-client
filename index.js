@@ -2,6 +2,7 @@ var
   request = require("request"),
   _ = require("lodash"),
   Agent = require('agentkeepalive'),
+  HttpsAgent = require('agentkeepalive').HttpsAgent,
   getClientClass = require("./lib/client");
 
 var defaultAgentOptions = {
@@ -23,7 +24,12 @@ var Factory = function(apiURL) {
       return err.code === "ECONNRESET" || err.code === "ETIMEDOUT" || err.code === "ESOCKETTIMEDOUT";
     }
   };
-  this.agent = new Agent(defaultAgentOptions);
+  if(/^https:\/\//.test(apiURL)) {
+    this.agent = new HttpsAgent(defaultAgentOptions);
+  }
+  else {
+    this.agent = new Agent(defaultAgentOptions);
+  }
   this.requestOptions = {
     timeout: 300000
   };
