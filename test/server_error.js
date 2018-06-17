@@ -45,6 +45,7 @@ describe("Server Error", function() {
     it("should return server error on 5xx http status", function(done) {
       client.get("/", function(err, data, res) {
         err.name.should.equal("ServerError");
+        err.stack.indexOf('http://localhost:' + SERVER_PORT + '/').should.equal(1)
         res.statusCode.should.equal(503);
         done();
       });
@@ -81,6 +82,7 @@ describe("Server Error", function() {
 
     it("should return network error when timeout out", function(done) {
       client.get("/", function(err) {
+        err.stack.indexOf('http://localhost:' + SERVER_PORT + '/').should.equal(1)
         err.name.should.equal("NetworkError");
         err.message.should.equal("ESOCKETTIMEDOUT");
         err.retryInfo.try.should.be.greaterThan(1);
