@@ -13,6 +13,7 @@ var defaultAgentOptions = {
 
 var Factory = function(apiURL) {
   this.apiURL = apiURL;
+  this.secret = null;
   this.retryOptions = {
     maxAttempts: 5,
     retryDelay: 100,
@@ -53,6 +54,10 @@ Factory.prototype.setRetryOptions = function(options) {
       self.retryOptions[k] = options[k];
     }
   });
+};
+
+Factory.prototype.setSecret = function(secret) {
+  this.secret = secret
 };
 
 Factory.prototype.setRequestOptions = function(options) {
