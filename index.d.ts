@@ -24,6 +24,7 @@ declare class APIFactory {
     constructor(apiURL);
     setRetryOptions(options: any);
     setAgentOptions(options: any);
+    setSecret(secret: string);
     exists(options?, cb?): Promise<boolean>;
     getClient(userId: number, app: string): Client;
     getRawClient(): Client;
