@@ -150,7 +150,7 @@ Factory.prototype.getPoolStats = function() {
   return lines.join("\n");
 };
 
-Factory.prototype.on = function(...args) {
+Factory.on = function(...args) {
   eventEmitter.on(...args)
 }
 
