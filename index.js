@@ -3,7 +3,8 @@ var
   _ = require("lodash"),
   Agent = require('agentkeepalive'),
   HttpsAgent = require('agentkeepalive').HttpsAgent,
-  getClientClass = require("./lib/client");
+  getClientClass = require("./lib/client"),
+  eventEmitter = require('./lib/eventemitter')
 
 var defaultAgentOptions = {
   keepAlive: true,
@@ -148,5 +149,9 @@ Factory.prototype.getPoolStats = function() {
   }
   return lines.join("\n");
 };
+
+Factory.prototype.on = function(...args) {
+  eventEmitter.on(...args)
+}
 
 module.exports = Factory;
