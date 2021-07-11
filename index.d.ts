@@ -34,6 +34,8 @@ declare class APIFactory {
     head(options, body?, cb?): Promise<any>;
     patch(options, body?, cb?): Promise<any>;
     delete(options, body?, cb?): Promise<any>;
+
+    on: (event: string, cb: any) => void
 }
 
 export = APIFactory
