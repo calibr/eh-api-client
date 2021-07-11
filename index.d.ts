@@ -20,6 +20,7 @@ declare class Client {
 
 declare class APIFactory {
     Client: Client;
+    secret: string
     getClientByContext(context: any): Client;
     constructor(apiURL);
     setRetryOptions(options: any);
@@ -35,7 +36,7 @@ declare class APIFactory {
     patch(options, body?, cb?): Promise<any>;
     delete(options, body?, cb?): Promise<any>;
 
-    on: (event: string, cb: any) => void
+    on(event: string, cb: any): void
 }
 
 export = APIFactory
