@@ -22,8 +22,9 @@ var Factory = function(apiURL) {
       if(params && params.method && params.method.toLowerCase() !== "get") {
         return false;
       }
-      // only retry if got an ECONNRESET/ETIMEDOUT/ESOCKETTIMEDOUT error
-      return err.code === "ECONNRESET" || err.code === "ETIMEDOUT" || err.code === "ESOCKETTIMEDOUT";
+      // only retry if got an ECONNRESET/ETIMEDOUT/ESOCKETTIMEDOUT/EAI_AGAIN/ECONNREFUSED error
+      // https://man7.org/linux/man-pages/man3/errno.3.html
+      return err.code === "ECONNRESET" || err.code === "ETIMEDOUT" || err.code === "ESOCKETTIMEDOUT" || err.code === 'EAI_AGAIN' || err.code === 'ECONNREFUSED';
     }
   };
   if(/^https:\/\//.test(apiURL)) {
