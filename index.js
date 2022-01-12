@@ -43,10 +43,33 @@ var Factory = function(apiURL) {
     if(!this._client) {
       this._client = new this.Client(this.apiURL);
       this._client._factory = this;
+      const requestId = Factory.getRequestIdFromStore()
+      if (null !== requestId) {
+        this._client.setRequestId(requestId)
+      }
     }
     return this._client;
   });
 };
+
+Factory.asyncLocalStorage = null
+
+Factory.setAsyncLocalStorage = function(asyncLocalStorage) {
+  Factory.asyncLocalStorage = asyncLocalStorage
+}
+
+Factory.getRequestIdFromStore = function() {
+  if (null !== Factory.asyncLocalStorage) {
+    const store = Factory.asyncLocalStorage.getStore()
+    if (undefined !== store) {
+      const requestId = store.get('requestId')
+      if (requestId) {
+        return requestId
+      }
+    }
+  }
+  return null
+}
 
 Factory.prototype.setRetryOptions = function(options) {
   var self = this;
@@ -97,6 +120,10 @@ Factory.prototype.getClient = function(userId, app) {
   var client = new this.Client(this.apiURL, {
     internalAuth: userId + ":" + app
   });
+  const requestId = Factory.getRequestIdFromStore()
+  if (null !== requestId) {
+    client.setRequestId(requestId)
+  }
   client._factory = this;
   return client;
 };
@@ -106,6 +133,10 @@ Factory.prototype.getClient = function(userId, app) {
 Factory.prototype.getRawClient = function(options) {
   var client = new this.Client(this.apiURL, options);
   client._factory = this;
+  const requestId = Factory.getRequestIdFromStore()
+  if (null !== requestId) {
+    client.setRequestId(requestId)
+  }
   return client;
 };
 
@@ -118,7 +149,12 @@ Factory.prototype.getClientByContext = function(context) {
   var client = new this.Client(this.apiURL, {
     internalAuth: context.userId + ":" + context.remoteAppCode
   });
-  client.setRequestId(context.requestId);
+  const requestId = Factory.getRequestIdFromStore()
+  if (null !== requestId) {
+    client.setRequestId(requestId)
+  } else {
+    client.setRequestId(context.requestId);
+  }
   client.setSessionId(context.sessionId);
   client._factory = this;
   return client;
