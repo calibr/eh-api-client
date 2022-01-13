@@ -36,7 +36,10 @@ declare class APIFactory {
     patch(options, body?, cb?): Promise<any>;
     delete(options, body?, cb?): Promise<any>;
 
-    on(event: string, cb: any): void
+    static on(event: string, cb: any): void
+
+    static setAsyncLocalStorage(asyncLocalStorage): void
+    static getRequestIdFromStore(): string
 }
 
 export = APIFactory
