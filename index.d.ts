@@ -15,6 +15,7 @@ declare class Client {
     setSessionId(sessionId: string): void;
     setRequestId(requestId: string): void;
     addRequestModificator(modificator): void;
+    setHeaders(headers: any): void;
     prototype: any;
 }
 
