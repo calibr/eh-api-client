@@ -47,6 +47,10 @@ var Factory = function(apiURL) {
       if (null !== requestId) {
         this._client.setRequestId(requestId)
       }
+      const deviceId = Factory.getDeviceIdFromStore()
+      if (null !== deviceId) {
+        this._client.setDeviceId(deviceId)
+      }
     }
     return this._client;
   });
@@ -65,6 +69,19 @@ Factory.getRequestIdFromStore = function() {
       const requestId = store.get('requestId')
       if (requestId) {
         return requestId
+      }
+    }
+  }
+  return null
+}
+
+Factory.getDeviceIdFromStore = function() {
+  if (null !== Factory.asyncLocalStorage) {
+    const store = Factory.asyncLocalStorage.getStore()
+    if (undefined !== store) {
+      const deviceId = store.get('deviceId')
+      if (deviceId) {
+        return deviceId
       }
     }
   }
@@ -124,6 +141,10 @@ Factory.prototype.getClient = function(userId, app) {
   if (null !== requestId) {
     client.setRequestId(requestId)
   }
+  const deviceId = Factory.getDeviceIdFromStore()
+  if (null !== deviceId) {
+    client.setDeviceId(deviceId)
+  }
   client._factory = this;
   return client;
 };
@@ -136,6 +157,10 @@ Factory.prototype.getRawClient = function(options) {
   const requestId = Factory.getRequestIdFromStore()
   if (null !== requestId) {
     client.setRequestId(requestId)
+  }
+  const deviceId = Factory.getDeviceIdFromStore()
+  if (null !== deviceId) {
+    client.setDeviceId(deviceId)
   }
   return client;
 };
@@ -156,6 +181,10 @@ Factory.prototype.getClientByContext = function(context) {
     client.setRequestId(context.requestId);
   }
   client.setSessionId(context.sessionId);
+  const deviceId = Factory.getDeviceIdFromStore()
+  if (null !== deviceId) {
+    client.setDeviceId(deviceId)
+  }
   client._factory = this;
   return client;
 };

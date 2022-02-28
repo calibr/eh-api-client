@@ -14,6 +14,7 @@ declare class Client {
     delete(options, body?, cb?): Promise<any>;
     setSessionId(sessionId: string): void;
     setRequestId(requestId: string): void;
+    setDeviceId(deviceId: string): void;
     addRequestModificator(modificator): void;
     setHeaders(headers: any): void;
     prototype: any;
@@ -41,6 +42,7 @@ declare class APIFactory {
 
     static setAsyncLocalStorage(asyncLocalStorage): void
     static getRequestIdFromStore(): string
+    static getDeviceIdFromStore(): string
 }
 
 export = APIFactory
