@@ -41,8 +41,8 @@ declare class APIFactory {
     static on(event: string, cb: any): void
 
     static setAsyncLocalStorage(asyncLocalStorage): void
-    static getRequestIdFromStore(): string
-    static getDeviceIdFromStore(): string
+    static getFromStore(property: string): string
+    static setClientProperties(client: Client, contenxt: any): void
 }
 
 export = APIFactory

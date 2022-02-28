@@ -43,14 +43,7 @@ var Factory = function(apiURL) {
     if(!this._client) {
       this._client = new this.Client(this.apiURL);
       this._client._factory = this;
-      const requestId = Factory.getRequestIdFromStore()
-      if (null !== requestId) {
-        this._client.setRequestId(requestId)
-      }
-      const deviceId = Factory.getDeviceIdFromStore()
-      if (null !== deviceId) {
-        this._client.setDeviceId(deviceId)
-      }
+      Factory.setClientProperties(this._client)
     }
     return this._client;
   });
@@ -62,30 +55,32 @@ Factory.setAsyncLocalStorage = function(asyncLocalStorage) {
   Factory.asyncLocalStorage = asyncLocalStorage
 }
 
-Factory.getRequestIdFromStore = function() {
+Factory.getFromStore = function(property) {
   if (null !== Factory.asyncLocalStorage) {
     const store = Factory.asyncLocalStorage.getStore()
     if (undefined !== store) {
-      const requestId = store.get('requestId')
-      if (requestId) {
-        return requestId
+      const value = store.get(property)
+      if (value) {
+        return value
       }
     }
   }
   return null
 }
 
-Factory.getDeviceIdFromStore = function() {
-  if (null !== Factory.asyncLocalStorage) {
-    const store = Factory.asyncLocalStorage.getStore()
-    if (undefined !== store) {
-      const deviceId = store.get('deviceId')
-      if (deviceId) {
-        return deviceId
-      }
-    }
+Factory.setClientProperties = function(client, context) {
+  const requestId = Factory.getFromStore('requestId') || (context && context.requestId)
+  if (null !== requestId) {
+    client.setRequestId(requestId)
+  } 
+  const deviceId = Factory.getFromStore('deviceId') || (context && context.deviceId)
+  if (null !== deviceId) {
+    client.setDeviceId(deviceId)
+  } 
+  const sessionId = Factory.getFromStore('sessionId') || (context && context.sessionId)
+  if (null !== sessionId) {
+    client.setSessionId(sessionId)
   }
-  return null
 }
 
 Factory.prototype.setRetryOptions = function(options) {
@@ -137,14 +132,7 @@ Factory.prototype.getClient = function(userId, app) {
   var client = new this.Client(this.apiURL, {
     internalAuth: userId + ":" + app
   });
-  const requestId = Factory.getRequestIdFromStore()
-  if (null !== requestId) {
-    client.setRequestId(requestId)
-  }
-  const deviceId = Factory.getDeviceIdFromStore()
-  if (null !== deviceId) {
-    client.setDeviceId(deviceId)
-  }
+  Factory.setClientProperties(client)
   client._factory = this;
   return client;
 };
@@ -154,14 +142,7 @@ Factory.prototype.getClient = function(userId, app) {
 Factory.prototype.getRawClient = function(options) {
   var client = new this.Client(this.apiURL, options);
   client._factory = this;
-  const requestId = Factory.getRequestIdFromStore()
-  if (null !== requestId) {
-    client.setRequestId(requestId)
-  }
-  const deviceId = Factory.getDeviceIdFromStore()
-  if (null !== deviceId) {
-    client.setDeviceId(deviceId)
-  }
+  Factory.setClientProperties(client)
   return client;
 };
 
@@ -174,17 +155,7 @@ Factory.prototype.getClientByContext = function(context) {
   var client = new this.Client(this.apiURL, {
     internalAuth: context.userId + ":" + context.remoteAppCode
   });
-  const requestId = Factory.getRequestIdFromStore()
-  if (null !== requestId) {
-    client.setRequestId(requestId)
-  } else {
-    client.setRequestId(context.requestId);
-  }
-  client.setSessionId(context.sessionId);
-  const deviceId = Factory.getDeviceIdFromStore()
-  if (null !== deviceId) {
-    client.setDeviceId(deviceId)
-  }
+  Factory.setClientProperties(client, context)
   client._factory = this;
   return client;
 };
