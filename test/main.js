@@ -24,7 +24,7 @@ describe("Test factory methods", function() {
     }).then(function(res) {
       res.should.type("object");
       done();
-    }).done();
+    })
   });
 
   it("post with headers", function(done) {
@@ -39,7 +39,7 @@ describe("Test factory methods", function() {
     }).then(function(res) {
       res.headers.should.eql(headers);
       done();
-    }).done();
+    })
   });
 });
 
