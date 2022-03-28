@@ -22,4 +22,15 @@ describe("Url placeholders", function() {
       done();
     });
   });
+  it("should not modify incoming URL when using placeholders", function(done) {
+    const url = ["/ws/??/??", "item", "id"]
+    const origUrl = url.slice()
+    client.get(url, {
+      test: true
+    }, function(err, req) {
+      should.not.exists(err);
+      url.should.eql(origUrl)
+      done();
+    });
+  });
 });
