@@ -22,7 +22,7 @@
     "request": "^2.73.0"
   },
   "devDependencies": {
-    "async": "^1.4.0",
+    "async": "^3.2.2",
     "eh-guid": "^0.2.0",
     "should": "^6.0.3",
     "sinon": "^1.15.4",
