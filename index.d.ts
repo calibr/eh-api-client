@@ -9,7 +9,7 @@ export type Options = OptionsObj | string | [string, ...unknown[]]
 
 export type Callback<T extends any> = (err: unknown, data: T, res: unknown, req: unknown) => void
 
-export declare class Client {
+export interface Client {
     fork(subUrl: string): Client;
     request<T extends any>(method: string, options: Options, cb?: Callback<T> ): Promise<T>;
     request<T extends any>(method: string, options: Options, body: unknown, cb?: Callback<T> ): Promise<T>;

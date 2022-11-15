@@ -5,6 +5,7 @@ var
   HttpsAgent = require('agentkeepalive').HttpsAgent,
   getClientClass = require("./lib/client"),
   eventEmitter = require('./lib/eventemitter')
+  Client = require("./lib/client")
 
 var defaultAgentOptions = {
   keepAlive: true,
@@ -191,6 +192,5 @@ Factory.on = function(...args) {
   eventEmitter.on(...args)
 }
 
-module.exports.Client = Client;
 module.exports.Factory = Factory;
-module.exports = Factory
+module.exports = Factory;
