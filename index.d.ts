@@ -72,5 +72,3 @@ export declare class APIFactory {
 }
 
 export default APIFactory
-
-type A<a extends b, b = string> = {a: a}

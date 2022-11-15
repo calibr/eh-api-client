@@ -72,11 +72,11 @@ Factory.setClientProperties = function(client, context) {
   const requestId = Factory.getFromStore('requestId') || (context && context.requestId)
   if (null !== requestId) {
     client.setRequestId(requestId)
-  } 
+  }
   const deviceId = Factory.getFromStore('deviceId') || (context && context.deviceId)
   if (null !== deviceId) {
     client.setDeviceId(deviceId)
-  } 
+  }
   const sessionId = Factory.getFromStore('sessionId') || (context && context.sessionId)
   if (null !== sessionId) {
     client.setSessionId(sessionId)
@@ -191,4 +191,6 @@ Factory.on = function(...args) {
   eventEmitter.on(...args)
 }
 
-module.exports = Factory;
+module.exports.Client = Client;
+module.exports.Factory = Factory;
+module.exports = Factory
