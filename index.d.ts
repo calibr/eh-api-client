@@ -39,7 +39,7 @@ export interface RetryOptions {
     retryStrategy?: (err: unknown, params: Record<string, unknown>) => boolean;
 }
 
-export declare class APIFactory {
+declare class APIFactory {
     Client: { new ():Client };
     secret: string | null
 

@@ -192,5 +192,4 @@ Factory.on = function(...args) {
   eventEmitter.on(...args)
 }
 
-module.exports.Factory = Factory;
 module.exports = Factory;
