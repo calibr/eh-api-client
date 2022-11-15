@@ -3,9 +3,9 @@
 // Definitions by: Rusinov Maxim <https://github.com/rusmaxim>
 
 interface OptionsObj extends  Record<string, unknown> {
-    url?: string | string [];
+    url?: string | [string, ...unknown[]];
 }
-export type Options = OptionsObj | string | string[]
+export type Options = OptionsObj | string | [string, ...unknown[]]
 
 export type Callback<T extends any> = (err: unknown, data: T, res: unknown, req: unknown) => void
 
@@ -72,3 +72,5 @@ export declare class APIFactory {
 }
 
 export default APIFactory
+
+type A<a extends b, b = string> = {a: a}
