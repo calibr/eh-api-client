@@ -20,7 +20,7 @@ export declare class Client {
     post<T extends any>(options: Options, body: unknown, cb?: Callback<T>): Promise<T>;
     put<T extends any>(options: Options, cb?: Callback<T>): Promise<T>;
     put<T extends any>(options: Options, body: unknown, cb?: Callback<T>): Promise<T>;
-    head<T extends any>(options: Options, cb?: Callback<undefined>): Promise<undefined>;
+    head<T extends any>(options: Options, cb?: Callback<unknown>): Promise<unknown>;
     patch<T extends any>(options: Options, cb?: Callback<T>): Promise<T>;
     patch<T extends any>(options: Options, body: unknown, cb?: Callback<T>): Promise<T>;
     delete<T extends any>(options: Options, cb?: Callback<T>): Promise<T>;
@@ -59,7 +59,7 @@ export declare class APIFactory {
     post<T extends any>(options: Options, body: unknown, cb?: Callback<T>): Promise<T>;
     put<T extends any>(options: Options, cb?: Callback<T>): Promise<T>;
     put<T extends any>(options: Options, body: unknown, cb?: Callback<T>): Promise<T>;
-    head<T extends any>(options: Options, cb?: Callback<undefined>): Promise<undefined>;
+    head<T extends any>(options: Options, cb?: Callback<unknown>): Promise<unknown>;
     patch<T extends any>(options: Options, cb?: Callback<T>): Promise<T>;
     patch<T extends any>(options: Options, body: unknown, cb?: Callback<T>): Promise<T>;
     delete<T extends any>(options: Options, cb?: Callback<T>): Promise<T>;
