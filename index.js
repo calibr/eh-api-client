@@ -195,4 +195,6 @@ Factory.on = function(...args) {
   eventEmitter.on(...args)
 }
 
+Factory.default = Factory
+
 module.exports = Factory;
