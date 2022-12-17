@@ -10,7 +10,10 @@ var
 var defaultAgentOptions = {
   keepAlive: true,
   // because node http server default timeout is 120 seconds, close socket before its timeout
-  freeSocketKeepAliveTimeout: 110000
+  freeSocketKeepAliveTimeout: 110000,
+  freeSocketTimeout: 110000,
+  // timeout of a request 5 minutes
+  timeout: 300e3
 };
 
 var Factory = function(apiURL) {

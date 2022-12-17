@@ -4,8 +4,7 @@ var
   sinon = require("sinon"),
   http = require("http"),
   async = require("async"),
-  URL = require("url"),
-  Promise = require("bluebird");
+  URL = require("url")
 
 var SERVER_PORT = 8591;
 var SERVER_TIMEOUT = 1000;

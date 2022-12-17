@@ -16,7 +16,7 @@
   "author": "calibr <awcalibr@gmail.com>",
   "license": "ISC",
   "dependencies": {
-    "agentkeepalive": "^3.3.0",
+    "agentkeepalive": "^4.2.1",
     "lodash": "^3.9.3",
     "nodeify": "^1.0.1",
     "request": "^2.73.0"
