@@ -14,7 +14,6 @@ var defaultAgentOptions = {
   freeSocketTimeout: 30000,
   timeout: 60000,
   // because node http server default timeout is 120 seconds, close socket before its timeout
-  socketActiveTTL: 110000,
 };
 
 var Factory = function(apiURL) {
