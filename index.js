@@ -23,12 +23,16 @@ var Factory = function(apiURL) {
     maxAttempts: 5,
     retryDelay: 100,
     retryStrategy: function(err, params) {
-      if(params && params.method && params.method.toLowerCase() !== "get") {
-        return false;
+      const method = params && params.method && params.method.toLowerCase() || ''
+      if (err.code === 'EAI_AGAIN' || err.code === 'EHOSTUNREACH') {
+        // for this kind of errors the request definitely has not reached the destionation
+        return true
       }
-      // only retry if got an ECONNRESET/ETIMEDOUT/ESOCKETTIMEDOUT/EAI_AGAIN/ECONNREFUSED error
-      // https://man7.org/linux/man-pages/man3/errno.3.html
-      return err.code === "ECONNRESET" || err.code === "ETIMEDOUT" || err.code === "ESOCKETTIMEDOUT" || err.code === 'EAI_AGAIN' || err.code === 'ECONNREFUSED';
+      if(method === "get") {
+        // https://man7.org/linux/man-pages/man3/errno.3.html
+        return err.code === "ECONNRESET" || err.code === "ETIMEDOUT" || err.code === "ESOCKETTIMEDOUT" || err.code === 'ECONNREFUSED';
+      }
+      return false
     }
   };
   if(/^https:\/\//.test(apiURL)) {
