@@ -17,7 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "agentkeepalive": "^4.2.1",
-    "lodash": "^3.9.3",
+    "lodash": "^4.17.21",
     "nodeify": "^1.0.1",
     "request": "^2.73.0"
   },
