@@ -24,7 +24,7 @@
   "devDependencies": {
     "async": "^1.4.0",
     "eh-guid": "^0.2.0",
-    "mocha": "^2.4.5",
+    "mocha": "^10.2.0",
     "should": "^6.0.3",
     "sinon": "^1.15.4"
   }
