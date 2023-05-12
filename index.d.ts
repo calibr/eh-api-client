@@ -16,6 +16,7 @@ export interface Client {
     exists(url: string, cb?: Callback<boolean>): Promise<boolean>;
     exists(url: string, options: Options, cb?: Callback<boolean>): Promise<boolean>;
     get<T extends any>(options: Options, cb?: Callback<T>): Promise<T>;
+    get<T extends any>(options: Options, body: unknown, cb?: Callback<T>): Promise<T>;
     post<T extends any>(options: Options, cb?: Callback<T>): Promise<T>;
     post<T extends any>(options: Options, body: unknown, cb?: Callback<T>): Promise<T>;
     put<T extends any>(options: Options, cb?: Callback<T>): Promise<T>;
@@ -29,6 +30,7 @@ export interface Client {
     setDeviceId(deviceId: string): void;
     addRequestModificator(modificator: (params: Record<string, unknown>) => Record<string, unknown>): void;
     setHeaders(headers: Record<string, string>): void;
+    setAuthBearerToken(token: string): void
     prototype: Client;
 }
 
@@ -53,6 +55,7 @@ declare class APIFactory {
     exists(cb?: Callback<boolean>): Promise<boolean>;
     exists(options: Options, cb?: Callback<boolean>): Promise<boolean>;
     getClient(userId: number, app: string): Client;
+    getClientWithAuthBearerToken(token: string): Client;
     getRawClient(): Client;
     get<T extends any>(options: Options, cb?: Callback<T>): Promise<T>;
     post<T extends any>(options: Options, cb?: Callback<T>): Promise<T>;

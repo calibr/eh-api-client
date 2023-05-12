@@ -146,6 +146,20 @@ Factory.prototype.getClient = function(userId, app) {
 };
 
 /**
+ * @param  {string} token
+ */
+Factory.prototype.getClientWithAuthBearerToken = function(token) {
+  if(!userId) {
+    userId = 0;
+  }
+  var client = new this.Client(this.apiURL);
+  Factory.setClientProperties(client)
+  client._factory = this;
+  client.setAuthBearerToken(token)
+  return client;
+};
+
+/**
  */
 Factory.prototype.getRawClient = function(options) {
   var client = new this.Client(this.apiURL, options);
