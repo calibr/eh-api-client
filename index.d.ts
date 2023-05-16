@@ -54,7 +54,7 @@ declare class APIFactory {
 
     exists(cb?: Callback<boolean>): Promise<boolean>;
     exists(options: Options, cb?: Callback<boolean>): Promise<boolean>;
-    getClient(userId: number, app: string): Client;
+    getClient(userId: number, app: string, token?: string): Client;
     getClientWithAuthBearerToken(token: string): Client;
     getRawClient(): Client;
     get<T extends any>(options: Options, cb?: Callback<T>): Promise<T>;
