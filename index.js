@@ -22,13 +22,20 @@ var Factory = function(apiURL) {
   this.retryOptions = {
     maxAttempts: 5,
     retryDelay: 100,
+    /**
+     *
+     * @param {*} err
+     * @param {*} params
+     * @param {*} params.retryOnTransientError allows retrying and request types
+     * @returns
+     */
     retryStrategy: function(err, params) {
       const method = params && params.method && params.method.toLowerCase() || ''
       if (err.code === 'EAI_AGAIN' || err.code === 'EHOSTUNREACH') {
         // for this kind of errors the request definitely has not reached the destionation
         return true
       }
-      if(method === "get") {
+      if(method === "get" || params.retryOnTransientError) {
         // https://man7.org/linux/man-pages/man3/errno.3.html
         return err.code === "ECONNRESET" || err.code === "ETIMEDOUT" || err.code === "ESOCKETTIMEDOUT" || err.code === 'ECONNREFUSED';
       }
