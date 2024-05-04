@@ -32,6 +32,7 @@ export interface Client {
     setHeaders(headers: Record<string, string>): void;
     setAuthBearerToken(token: string): void
     prototype: Client;
+    apiURL: string;
 }
 
 
