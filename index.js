@@ -131,6 +131,9 @@ getClientClass.methods.forEach(function(method) {
   Factory.prototype[method.toLowerCase()] = function() {
     var args = Array.prototype.slice.call(arguments);
     args.unshift(method);
+
+    Factory.setClientProperties(this.client)
+
     return this.client.request.apply(this.client, args);
   };
 });
