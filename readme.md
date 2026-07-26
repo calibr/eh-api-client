@@ -1,61 +1,76 @@
-## Require
+# eh-api-client
+
+![Logo eh-api-client](./logo.png)
+
+**Battle-proven HTTP client for communication between microservices.**
+
+Built for production service-to-service traffic: contextual authentication, correlation ID propagation, connection pooling, and automatic recovery from transient network failures.
+
+## Install
+
+```sh
+npm install eh-api-client
+```
+
+## Quick start
 
 ```js
-var ClientFactory = require("eh-api-client");
-var factory = new ClientFactory("http://someservice.com/v1"); // initialize new factory with root API url
+const ClientFactory = require("eh-api-client");
+
+const users = new ClientFactory("http://users-service/v1");
+const client = users.getClient(42, "orders-service");
+
+const user = await client.get(["/users/??", 42]);
+await client.patch(["/users/??", 42], { active: true });
 ```
 
-## Getting client for user
+Every method supports both Promises and Node-style callbacks. Available methods are `get`, `post`, `put`, `patch`, `delete`, `head`, and `exists`.
+
+## Correlation IDs
+
+Propagate `x-request-id` automatically across asynchronous call chains with `AsyncLocalStorage`:
 
 ```js
-var client = factory.getClient(50, "web"); // get client for userId = 50 and app = "web"
+const { AsyncLocalStorage } = require("async_hooks");
+const ClientFactory = require("eh-api-client");
+
+const requestContext = new AsyncLocalStorage();
+ClientFactory.setAsyncLocalStorage(requestContext);
+
+requestContext.run(new Map([["requestId", "req-123"]]), async () => {
+  await client.get("/profile"); // sends x-request-id: req-123
+});
 ```
 
-## Getting client for guest user
+Request, session, and device IDs can also be assigned directly with `setRequestId`, `setSessionId`, and `setDeviceId`.
+
+## Resilient by default
+
+Transient network failures are retried automatically for GET requests. Retries are bounded and configurable:
 
 ```js
-var client = factory.getClient(0, "web"); // you can pass 0/null/undefined/"" as first argument to initialize guest client
+users.setRetryOptions({
+  maxAttempts: 5,
+  retryDelay: 100
+});
 ```
 
-## Request options
+For safe-to-retry writes, set `retryOnTransientError: true`. Stream bodies are never retried.
 
-You can pass request options in the first argument of request. Options are:
-- qs - query string parameters
-- url - request URL path
-- formData - form data
-- encoding
-- filter - data filter rules
-- range - data range rule
-- order - order rule
-- headers
-- timeout - request timeout
-- notFoundIsNull - if specified if request returns 404 status code then null will be returned instead of throwing error
-- retryOnTransientError - if specified then request will be retried if it fails on transient errors. By default only read only requests can be retried. With this option you can retry any request.
+## Production features
 
-## Events
+- Shared keep-alive connection pool
+- Internal, bearer-token, and secret-based authentication
+- `filter`, `range`, `order`, query string, headers, timeouts, and form data
+- URL placeholders with safe value encoding
+- Forked clients for nested API paths
+- Request modifiers and configurable defaults
+- Structured HTTP and network errors
+- `request-done` and `network-error` lifecycle events
+- TypeScript declarations included
 
-### request-done
+See the [test suite](test) for focused examples of each feature.
 
-Emitted when request is done without any network error. Event data:
+## License
 
-```
-{
-  method,
-  url,
-  options,
-  statusCode
-}
-```
-
-### network-error
-
-Emitted when network error has occured. Event data:
-
-```
-{
-  method,
-  url,
-  options,
-  err
-}
-```
+ISC
