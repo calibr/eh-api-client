@@ -63,7 +63,6 @@ For safe-to-retry writes, set `retryOnTransientError: true`. Stream bodies are n
 
 - Shared keep-alive connection pool
 - Internal, bearer-token, and secret-based authentication
-- `filter`, `range`, `order`, query string, headers, timeouts, and form data
 - URL placeholders with safe value encoding
 - Forked clients for nested API paths
 - Request modifiers and configurable defaults
