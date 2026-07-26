@@ -3,6 +3,7 @@
 <div align="center">
   <img src="./logo.png" alt="Logo eh-api-client" width="200" height="200" />
 </div>
+
 **Battle-proven HTTP client for communication between microservices.**
 
 Built for production service-to-service traffic: contextual authentication, correlation ID propagation, connection pooling, and automatic recovery from transient network failures.
