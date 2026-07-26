@@ -96,6 +96,10 @@ Factory.setClientProperties = function(client, context) {
   if (null !== sessionId) {
     client.setSessionId(sessionId)
   }
+
+  if (this.asyncLocalStorage) {
+    client.setAsyncLocalStorage(this.asyncLocalStorage)
+  }
 }
 
 Factory.prototype.setRetryOptions = function(options) {
